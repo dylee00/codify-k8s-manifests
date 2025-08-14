@@ -15,8 +15,6 @@ spec:
       labels:
         app: test-gateway-test-label
     spec:
-      imagePullSecrets:
-      - name: dockerhub-secret
       containers:
       - name: test-gateway-test
         image: dylee00/gateway-test:
