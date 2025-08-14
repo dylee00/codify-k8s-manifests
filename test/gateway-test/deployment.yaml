@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-gateway-test
+  namespace: test-ns
+  labels:
+    app: test-gateway-test-label
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-gateway-test-label
+  template:
+    metadata:
+      labels:
+        app: test-gateway-test-label
+    spec:
+      containers:
+      - name: test-gateway-test
+        image: localhost/gateway-test:t1
+        ports:
+        - containerPort: 8081
