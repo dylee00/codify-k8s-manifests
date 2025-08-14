@@ -19,6 +19,6 @@ spec:
       - name: dockerhub-secret
       containers:
       - name: test-gateway-test
-        image: dylee00/gateway-test:
+        image: dylee00/gateway-test:latest
         ports:
         - containerPort: 8081
