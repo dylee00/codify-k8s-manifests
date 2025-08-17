@@ -22,3 +22,10 @@ spec:
         image: dylee00/gateway-test:16973019692
         ports:
         - containerPort: 8081
+        env:
+        - name: MY_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: test-secret
+            key: MY_SECRET
+        
