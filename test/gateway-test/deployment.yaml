@@ -26,5 +26,5 @@ spec:
             - name: MY_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: test-secret
+                  name: sealed-test-secret
                   key: MY_SECRET
