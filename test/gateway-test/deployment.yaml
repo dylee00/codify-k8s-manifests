@@ -16,16 +16,15 @@ spec:
         app: test-gateway-test-label
     spec:
       imagePullSecrets:
-      - name: dockerhub-secret
+        - name: dockerhub-secret
       containers:
-      - name: test-gateway-test
-        image: dylee00/gateway-test:16973019692
-        ports:
-        - containerPort: 8081
-        env:
-        - name: MY_SECRET
-        valueFrom:
-          secretKeyRef:
-            name: test-secret
-            key: MY_SECRET
-        
+        - name: test-gateway-test
+          image: dylee00/gateway-test:16973019692
+          ports:
+            - containerPort: 8081
+          env:
+            - name: MY_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: test-secret
+                  key: MY_SECRET
