@@ -1,0 +1,171 @@
+#gateway
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: codify-gateway
+  namespace: codify
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Codify-2025/k8s-manifests.git
+    targetRevision: main
+    path: deploy/gateway
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: codify
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+
+#member
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: codify-member
+  namespace: codify
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Codify-2025/k8s-manifests.git
+    targetRevision: main
+    path: deploy/member
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: codify
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+
+#similarity
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: codify-similarity
+  namespace: codify
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Codify-2025/k8s-manifests.git
+    targetRevision: main
+    path: deploy/similarity
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: codify
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+ 
+---
+
+#dashboard
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: codify-dashboard
+  namespace: codify
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Codify-2025/k8s-manifests.git
+    targetRevision: main
+    path: deploy/dashboard
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: codify
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+---
+
+#result
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: codify-result
+  namespace: codify
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Codify-2025/k8s-manifests.git
+    targetRevision: main
+    path: deploy/result
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: codify
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+---
+
+#upload
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: codify-upload
+  namespace: codify
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Codify-2025/k8s-manifests.git
+    targetRevision: main
+    path: deploy/upload
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: codify
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+---
+
+#parsing
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: codify-parsing
+  namespace: codify
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Codify-2025/k8s-manifests.git
+    targetRevision: main
+    path: deploy/parsing
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: codify
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+---
+
+#submit
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: codify-submit
+  namespace: codify
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Codify-2025/k8s-manifests.git
+    targetRevision: main
+    path: deploy/submit
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: codify
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
