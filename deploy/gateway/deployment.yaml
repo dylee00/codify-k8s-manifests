@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codify-gateway
+  namespace: codify
+  labels: 
+    app: codify-gateway-label
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: codify-gateway-label
+  template:
+    metadata:
+      labels:
+        app: codify-gateway-label
+    spec:
+      containers:
+        - name: codify-gateway
+          image: dylee00/codify-gateway:latest
+          ports:
+            - containerPort: 8080
