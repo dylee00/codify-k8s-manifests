@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codify-parsing
+  namespace: codify
+  labels:
+    app: codify-parsing-label
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: codify-parsing-label
+  template:
+    metadata:
+      labels:
+        app: codify-parsing-label
+    spec:
+      containers:
+        - name: codify-parsing
+          image: dylee00/codify-parsing:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: codify-secret

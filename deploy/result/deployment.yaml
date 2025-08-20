@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codify-result
+  namespace: codify
+  labels:
+    app: codify-result-label
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: codify-result-label
+  template:
+    metadata:
+      labels:
+        app: codify-result-label
+    spec:
+      containers:
+        - name: codify-result
+          image: dylee00/codify-result:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: codify-secret
