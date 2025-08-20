@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codify-member
+  namespace: codify
+  labels:
+    app: codify-member-label
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: codify-member-label
+  template:
+    metadata:
+      labels:
+        app: codify-member-label
+    spec:
+      containers:
+        - name: codify-member
+          image: dylee00/codify-member:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: codify-secret

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: codify-upload
+  namespace: codify
+spec:
+  selector:
+    app: codify-upload-label
+  ports:
+  - name: codify-upload-port
+    port: 80
+    targetPort: 8080
+  type: NodePort
