@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: codify-dashboard
-          image: dylee00/codify-dashboard:17407898290
+          image: dylee00/codify-dashboard:17408000285
           ports:
             - name: http
               containerPort: 8080
