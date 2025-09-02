@@ -1,5 +1,5 @@
 apiVersion: networking.k8s.io/v1
-kind: ingress
+kind: Ingress
 metadata:
   name: codify-ingress
   namespace: codify
@@ -11,8 +11,8 @@ spec:
     - host: codify-test.duckdns.org
       http:
         paths:
-          - path: /(.+)
-            pathType: Prefix
+          - path: /(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: codify-gateway-svc
