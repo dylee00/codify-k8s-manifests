@@ -6,8 +6,8 @@ resources:
 - gateway/deployment.yaml
 - gateway/service.yaml
 - gateway/ingress.yaml
-- member/deployment.yaml
-- member/service.yaml
+- submit/deployment.yaml
+- submit/service.yaml
 - dashboard/deployment.yaml
 - dashboard/service.yaml
 
