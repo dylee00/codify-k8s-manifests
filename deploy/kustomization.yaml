@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- secret/sealed-codify-secret.yaml
+- gateway/deployment.yaml
+- gateway/service.yaml
+- gateway/ingress.yaml
+- member/deployment.yaml
+- member/service.yaml
+- dashboard/deployment.yaml
+- dashboard/service.yaml
+
+namespace: codify
