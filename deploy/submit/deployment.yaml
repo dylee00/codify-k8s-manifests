@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: codify-submit
-          image: dylee00/codify-submit:latest
+          image: dylee00/codify-submit:17407850882
           ports:
             - name: http
               containerPort: 8080
