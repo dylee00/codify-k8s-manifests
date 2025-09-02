@@ -10,7 +10,7 @@ spec:
     - name: http
       port: 80
       targetPort: 8080
-   - name: actuator
-     port: 9090
-     targetPort: 9090
+    - name: actuator
+      port: 9090
+      targetPort: 9090
   type: NodePort
