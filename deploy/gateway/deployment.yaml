@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: codify-gateway
-          image: dylee00/codify-gateway:17423605382
+          image: dylee00/codify-gateway:17424513786
           ports:
             - name: http
               containerPort: 8080
