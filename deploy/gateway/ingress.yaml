@@ -3,6 +3,12 @@ kind: Ingress
 metadata:
   name: codify-ingress
   namespace: codify
+  annotations:
+    nginx.ingress.kubernetes.io/cors-allow-origin: "http://localhost:5173,https://codify-frontend-blush.vercel.app"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET,POST,PUT,DELETE,PATCH,OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,USER-UUID"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
 spec:
   ingressClassName: nginx
   rules:
