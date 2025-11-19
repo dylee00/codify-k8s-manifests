@@ -1,161 +1,228 @@
-# Default values for codify-chart.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+# global configurations
+global:
+  namespace: codify
+  imagePullPolicy: Always
 
-# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
-replicaCount: 1
+# Common configurations
+common:
+  serviceType: NodePort
+  secretName: codify-secret
 
-# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
-image:
-  repository: nginx
-  # This sets the pull policy for images.
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+# Default probe settings
+defaultProbes:
+  readiness:
+    initialDelaySeconds: 15
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+  liveness:
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
 
-# This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-imagePullSecrets: []
-# This is to override the chart name.
-nameOverride: ""
-fullnameOverride: ""
+# Default Ports
+defaultPorts:
+  http: 8080
+  actuator: 9090
 
-# This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
-serviceAccount:
-  # Specifies whether a service account should be created.
-  create: true
-  # Automatically mount a ServiceAccount's API credentials?
-  automount: true
-  # Annotations to add to the service account.
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template.
-  name: ""
+# Default Actuator configuration
+defaultActuator:
+  enabled: true
+  healthPath: /actuator/health/readiness
+  livenessPath: /actuator/health/liveness
 
-# This is for setting Kubernetes Annotations to a Pod.
-# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-podAnnotations: {}
-# This is for setting Kubernetes Labels to a Pod.
-# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
-podLabels: {}
+# Default Service
+defaultService:
+  type: NodePort
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+    - name: actuator  
+      port: 9090
+      targetPort: 9090
 
-podSecurityContext: {}
-  # fsGroup: 2000
+# CI/CD
 
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+# Deploy
 
-# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
-service:
-  # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
-  type: ClusterIP
-  # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
-  port: 80
+# Individual microservices configuration
+services:
+  # Dashboard Service
+  dashboard:
+    enabled: true
+    name: codify-dashboard
+    image: 
+      repository: codify-dashboard
+      tag: "17408000285"
+    replicas: 1
+  # Parsing Service
+  parsing:
+    enabled: true
+    name: codify-parsing
+    image:
+      repository: codify-parsing
+      tag: "17937312423"
+    replicas: 1
+  # Result Service
+  result:
+    enabled: true
+    name: codify-result
+    image:
+      repository: codify-result
+      tag: "17907828050"
+  # Similarity Service
+  similarity:
+    enabled: true
+    name: codify-similarity
+    image:
+      repository: codify-similarity
+      tag: "17903128456"
+  # Submit Service
+  submit:
+    enabled: true
+    name: codify-submit
+    image:
+      repository: codify-submit
+      tag: "17790691017"
+  # Upload Service
+  upload:
+    enabled: true
+    name: codify-upload
+    image:
+      repository: codify-upload
+      tag: "17902676294"
+  # Gateway Service
+  gateway:
+    enabled: true
+    name: codify-gateway
+    image:
+      repository: codify-gateway
+      tag: "17937312423"
+  
+# ==============================================
+# global Ingress configuration
+# ==============================================
 
-# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  enabled: true
+  name: codify-ingress
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/cors-allow-origin: "http://localhost:5173,https://codify-frontend-blush.vercel.app"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET,POST,PUT,DELETE,PATCH,OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,USER-UUID"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
   hosts:
-    - host: chart-example.local
+    - host: domain.shop
       paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-    # - secretName: chart-example-tls
-    #   hosts:
-    #     - chart-example.local
+        - path: /api
+          pathType: Prefix
+          service: codify-gateway-svc
+          port: 80
 
-# -- Expose the service via gateway-api HTTPRoute
-# Requires Gateway API resources and suitable controller installed within the cluster
-# (see: https://gateway-api.sigs.k8s.io/guides/)
-httpRoute:
-  # HTTPRoute enabled.
-  enabled: false
-  # HTTPRoute annotations.
-  annotations: {}
-  # Which Gateways this Route is attached to.
-  parentRefs:
-  - name: gateway
-    sectionName: http
-    # namespace: default
-  # Hostnames matching HTTP header.
-  hostnames:
-  - chart-example.local
-  # List of rules and filters applied.
-  rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /headers
-  #   filters:
-  #   - type: RequestHeaderModifier
-  #     requestHeaderModifier:
-  #       set:
-  #       - name: My-Overwrite-Header
-  #         value: this-is-the-only-value
-  #       remove:
-  #       - User-Agent
-  # - matches:
-  #   - path:
-  #       type: PathPrefix
-  #       value: /echo
-  #     headers:
-  #     - name: version
-  #       value: v2
+# ==============================================
+# 운영 관련 설정
+# ==============================================
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-# This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
-livenessProbe:
-  httpGet:
-    path: /
-    port: http
-readinessProbe:
-  httpGet:
-    path: /
-    port: http
-
-# This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
-autoscaling:
+# HPA (기본 비활성화)
+hpa:
   enabled: false
   minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 75
+  targetMemoryUtilizationPercentage: 80
 
-# Additional volumes on the output Deployment definition.
-volumes: []
-  # - name: foo
-  #   secret:
-  #     secretName: mysecret
-  #     optional: false
+# Service Account
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
 
-# Additional volumeMounts on the output Deployment definition.
-volumeMounts: []
-  # - name: foo
-  #   mountPath: "/etc/foo"
-  #   readOnly: true
+# 보안 설정
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 3000
+  fsGroup: 2000
 
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+
+# 네트워크 정책 (기본 비활성화)
+networkPolicy:
+  enabled: false
+
+# Pod Disruption Budget
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# 모니터링
+monitoring:
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+    path: /actuator/prometheus
+    port: actuator
+
+# 노드 스케줄링
 nodeSelector: {}
-
 tolerations: []
 
-affinity: {}
+# Pod 안티-어피니티
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/part-of
+            operator: In
+            values:
+            - codify
+        topologyKey: kubernetes.io/hostname
+
+# ==============================================
+# 환경별 오버라이드를 위한 기본값
+# ==============================================
+
+development:
+  replicas: 1
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  probes:
+    readiness:
+      initialDelaySeconds: 10
+      periodSeconds: 3
+
+production:
+  imagePullPolicy: IfNotPresent
+  securityContext:
+    readOnlyRootFilesystem: true
+  hpa:
+    enabled: true
+  probes:
+    readiness:
+      initialDelaySeconds: 20
+      periodSeconds: 10
+    liveness:
+      initialDelaySeconds: 45
+      periodSeconds: 15
+
