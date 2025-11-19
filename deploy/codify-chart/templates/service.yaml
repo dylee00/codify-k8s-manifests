@@ -1,0 +1,19 @@
+{{- range $serviceName, $config := .Values.services }}
+{{- if $config.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $config.name }}
+  namespace: {{ $.Values.global.namespace }}
+spec:
+  selector:
+    app: {{ printf "codify-%s-label" $serviceName }}
+  type: {{ .Values.service.type }}
+  ports:
+    - name: {{ printf "codify-%s-port" $serviceName }}
+      port: {{ (index $.Values.defaultService.ports 0).port }}
+      targetPort: {{ (index $.Values.defaultService.ports 0).targetPort }}
+      type: {{ $.Values.common.serviceType }}
+{{- end }}
+{{- end }}

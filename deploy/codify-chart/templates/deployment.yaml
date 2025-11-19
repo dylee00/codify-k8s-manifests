@@ -1,0 +1,45 @@
+{{- range $serviceName, $config := .Values.services }}
+{{- if $config.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $config.name }}
+  namespace: {{ $.Values.global.namespace }}
+  labels:
+    app: {{ printf "codify-%s-label" $serviceName }}
+spec:
+  replicas: {{ $config.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ printf "codify-%s-label" $serviceName }}
+  template:
+    metadata:
+      labels:
+        app: {{ printf "codify-%s-label" $serviceName }}
+    spec:
+      containers:
+        - name: {{ $config.name }}
+          image: {{ $.Values.global.imageRegistry }}/{{ $config.image.repository }}:{{ $config.image.tag }}
+          ports:
+            - name: http
+              containerPort: {{ $.Values.defaultPorts.http }}
+            {{- if $.Values.defaultActuator.enabled }}
+            - name: actuator
+              containerPort: {{ $.Values.defaultPorts.actuator }}
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ $.Values.common.secretName }}
+          {{- if $.Values.defaultActuator.enabled }}
+          readinessProbe:
+            httpGet:
+              path: {{ $.Values.defaultActuator.healthPath }}
+              port: actuator
+            initialDelaySeconds: {{ $.Values.defaultProbes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ $.Values.defaultProbes.readiness.periodSeconds }}
+            timeoutSeconds: {{ $.Values.defaultProbes.readiness.timeoutSeconds }}
+            failureThreshold: {{ $.Values.defaultProbes.readiness.failureThreshold }}
+          {{- end }}
+{{- end }}
+{{- end }}
